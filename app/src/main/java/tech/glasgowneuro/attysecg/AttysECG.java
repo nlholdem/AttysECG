@@ -76,6 +76,7 @@ public class AttysECG extends AppCompatActivity {
     private InfoView infoView = null;
     private HeartratePlotFragment heartratePlotFragment = null;
     private VectorPlotFragment vectorPlotFragment = null;
+    private HRVPlotFragment HRVPlotFragment = null;
 
     private BluetoothAdapter BA;
     private AttysComm attysComm = null;
@@ -106,7 +107,8 @@ public class AttysECG extends AppCompatActivity {
     public enum PlotWindowContent {
         NONE,
         BPM,
-        VECTOR
+        VECTOR,
+        HRV
     }
 
     int ygapForInfo = 0;
@@ -415,6 +417,11 @@ public class AttysECG extends AppCompatActivity {
                             dataRecorder.setBPM(filtBPM);
                             if (heartratePlotFragment != null) {
                                 heartratePlotFragment.addValue(filtBPM);
+                            }
+                            if (HRVPlotFragment!= null) {
+                                HRVPlotFragment.addValue(filtBPM);
+                            } else {
+                                Log.d(TAG, String.format("HRVPlotFragment is null"));
                             }
                         }
                     }
@@ -1056,6 +1063,19 @@ public class AttysECG extends AppCompatActivity {
 
                 showPlotFragment();
                 plotWindowContent = PlotWindowContent.VECTOR;
+                return true;
+
+            case R.id.plotWindowHRV:
+                deletePlotWindow();
+                HRVPlotFragment = new HRVPlotFragment();
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "Adding HRV fragment");
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_plot_container, HRVPlotFragment, "HRVPlotFragment")
+                        .commit();
+                showPlotFragment();
+                plotWindowContent = PlotWindowContent.HRV;
                 return true;
 
             case R.id.plotWindowOff:
