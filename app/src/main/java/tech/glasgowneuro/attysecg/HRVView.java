@@ -75,7 +75,6 @@ public class HRVView extends View {
 
         }
         Log.d(TAG, "HeartRate:  " + heartRate + " Color: " + paintCircle.getColor() + " i: " + i);
-
     }
 
 
@@ -105,4 +104,5 @@ public class HRVView extends View {
     public float getHeartRate(){
         return heartRate;
     }
+
 }

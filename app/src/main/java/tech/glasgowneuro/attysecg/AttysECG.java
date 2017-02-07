@@ -500,9 +500,6 @@ public class AttysECG extends AppCompatActivity {
                                 vectorPlotFragment.addValue(I,aVF);
                             }
 
-                            if (hrvPlotFragment != null) {
-                                hrvPlotFragment.addValue(I,aVF);
-                            }
 
                             dataRecorder.saveData(I,II,III,aVR,aVL,aVF);
 
