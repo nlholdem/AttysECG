@@ -76,7 +76,7 @@ public class AttysECG extends AppCompatActivity {
     private InfoView infoView = null;
     private HeartratePlotFragment heartratePlotFragment = null;
     private VectorPlotFragment vectorPlotFragment = null;
-    private HRVPlotFragment HRVPlotFragment = null;
+    private HRVPlotFragment hrvPlotFragment = null;
 
     private BluetoothAdapter BA;
     private AttysComm attysComm = null;
@@ -418,10 +418,8 @@ public class AttysECG extends AppCompatActivity {
                             if (heartratePlotFragment != null) {
                                 heartratePlotFragment.addValue(filtBPM);
                             }
-                            if (HRVPlotFragment!= null) {
-                                HRVPlotFragment.addValue(filtBPM);
-                            } else {
-                                Log.d(TAG, String.format("HRVPlotFragment is null"));
+                            if (hrvPlotFragment != null) {
+                                hrvPlotFragment.addValue(filtBPM);
                             }
                         }
                     }
@@ -500,6 +498,10 @@ public class AttysECG extends AppCompatActivity {
 
                             if (vectorPlotFragment != null) {
                                 vectorPlotFragment.addValue(I,aVF);
+                            }
+
+                            if (hrvPlotFragment != null) {
+                                hrvPlotFragment.addValue(I,aVF);
                             }
 
                             dataRecorder.saveData(I,II,III,aVR,aVL,aVF);
@@ -581,6 +583,9 @@ public class AttysECG extends AppCompatActivity {
                     }
                     if (vectorPlotFragment != null) {
                         vectorPlotFragment.redraw();
+                    }
+                    if (hrvPlotFragment != null) {
+                        hrvPlotFragment.redraw();
                     }
                 }
             }
@@ -1066,14 +1071,17 @@ public class AttysECG extends AppCompatActivity {
                 return true;
 
             case R.id.plotWindowHRV:
+
                 deletePlotWindow();
-                HRVPlotFragment = new HRVPlotFragment();
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Adding HRV fragment");
-                }
+
+                hrvPlotFragment = new HRVPlotFragment();
+
+                hrvPlotFragment.setHistorySize(attysComm.getSamplingRateInHz()/2);
+                hrvPlotFragment.setGain(gain);
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_plot_container, HRVPlotFragment, "HRVPlotFragment")
+                        .add(R.id.fragment_plot_container, hrvPlotFragment, "HRVPlotFragment")
                         .commit();
+
                 showPlotFragment();
                 plotWindowContent = PlotWindowContent.HRV;
                 return true;
@@ -1127,6 +1135,11 @@ public class AttysECG extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .remove(vectorPlotFragment).commit();
             vectorPlotFragment = null;
+        }
+        if (hrvPlotFragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(hrvPlotFragment).commit();
+            hrvPlotFragment = null;
         }
     }
 

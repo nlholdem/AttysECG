@@ -38,7 +38,7 @@ public class HeartratePlotFragment extends Fragment {
     View view = null;
 
     /**
-     * Called when the activity is first created.
+     * Called when the activity is first cr                      eated.
      */
     @Override
     public View onCreateView(LayoutInflater inflater,

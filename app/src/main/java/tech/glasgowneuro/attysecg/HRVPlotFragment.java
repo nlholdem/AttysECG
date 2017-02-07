@@ -1,160 +1,175 @@
 package tech.glasgowneuro.attysecg;
 
+
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Canvas;
-import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.view.ViewTreeObserver;
 
+import com.androidplot.ui.SizeMetric;
+import com.androidplot.ui.SizeMode;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYPlot;
 
+import java.util.ArrayList;
+
+
 /**
- * Created by paul on 25/01/17.
+ * Created by paul on 06/02/17.
  */
 
 public class HRVPlotFragment extends Fragment {
 
     String TAG = "HRVPlotFragment";
 
-    private static final int HISTORY_SIZE = 60;
-    private SimpleXYSeries hrvHistorySeries = null;
-    private XYPlot hrvPlot = null;
-    private TextView hrvText = null;
+    private int history_size = 250;
+    private float range = 1;
 
-    private View view = null;
-    private Canvas canvas = null;
-    private Paint paintWhite = new Paint();
+    private SimpleXYSeries vectorHistorySeries = null;
+    private XYPlot vectorPlot = null;
+    private HRVView hrvView = null;
 
+
+    View view = null;
+
+    void setHistorySize(int historySize) {
+        history_size = historySize;
+    }
+
+    void setGain(float _gain) {
+        range = 750 / _gain;
+        setScale();
+    }
+
+    void setScale() {
+        if (vectorPlot != null) {
+            vectorPlot.setRangeBoundaries(range, -range, BoundaryMode.FIXED);
+            vectorPlot.setDomainBoundaries(-range, range, BoundaryMode.FIXED);
+        }
+    }
 
     /**
      * Called when the activity is first created.
      */
-
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreate, creating HRV Fragment");
+        Log.d(TAG, "onCreate, creating Fragment");
 
         if (container == null) {
             return null;
         }
 
         view = inflater.inflate(R.layout.hrvplotfragment, container, false);
-        Log.d(TAG, "HRVPlotFragment is accelerated: " + view.isHardwareAccelerated());
-        paintWhite.setColor(Color.WHITE);
-
+        if (view == null) {
+                Log.e(TAG, "view == NULL!");
+        }
+        Log.d(TAG, "Created view");
 
         // setup the APR Levels plot:
-        hrvPlot = (XYPlot) view.findViewById(R.id.hrvPlotView);
-        hrvText = (TextView) view.findViewById(R.id.hrvTextView);
-
-        hrvHistorySeries = new SimpleXYSeries("Heart rate variability");
-        if (hrvHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.ERROR)) {
-                Log.e(TAG, "hrvHistorySeries == null");
-            }
+        hrvView = (HRVView) view.findViewById(R.id.HRVPlotView);
+/*
+        vectorPlot = (XYPlot) view.findViewById(R.id.HRVPlotView);
+        if (vectorPlot == null) {
+                Log.e(TAG, "HRVPlot == null");
         }
-        hrvHistorySeries.useImplicitXVals();
 
-        hrvPlot.setRangeBoundaries(0, 200, BoundaryMode.FIXED);
-        hrvPlot.setDomainBoundaries(0, HISTORY_SIZE, BoundaryMode.FIXED);
-        hrvPlot.addSeries(hrvHistorySeries,
+        vectorHistorySeries = new SimpleXYSeries("");
+        if (vectorHistorySeries == null) {
+                Log.e(TAG, "vectorHistorySeries == null");
+        }
+
+        setScale();
+        vectorPlot.addSeries(vectorHistorySeries,
                 new LineAndPointFormatter(
                         Color.rgb(100, 255, 255), null, null, null));
-        hrvPlot.setDomainLabel("Heartbeat #");
-        hrvPlot.setRangeLabel("");
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
-        int height = metrics.heightPixels;
-        if ((height > 1000) && (width > 1000)) {
-            hrvPlot.setDomainStep(StepMode.INCREMENT_BY_VAL, 25);
-            hrvPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 25);
-        } else {
-            hrvPlot.setDomainStep(StepMode.INCREMENT_BY_VAL, 50);
-            hrvPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 50);
-        }
+        //vectorPlot.setDomainStepValue(2 / 10);
+        vectorPlot.setDomainLabel("I/mV");
+        vectorPlot.setRangeLabel("aVF/mV");
 
         Paint paint = new Paint();
         paint.setColor(Color.argb(128, 0, 255, 0));
-        hrvPlot.getGraph().setDomainGridLinePaint(paint);
-        hrvPlot.getGraph().setRangeGridLinePaint(paint);
-
+        vectorPlot.getGraph().setDomainGridLinePaint(paint);
+        vectorPlot.getGraph().setRangeGridLinePaint(paint);
+*/
         return view;
 
     }
 
-    class MyRelativeLayout extends RelativeLayout
-    {
-        public MyRelativeLayout(Context context){
-            super(context);
+
+    public synchronized void redraw() {
+
+        if (vectorPlot != null) {
+            vectorPlot.redraw();
         }
+    }
 
-        @Override
-        protected void onDraw(Canvas canvas){
-            Log.d(TAG, "*** HRVPlot: onDraw()");
+    public synchronized void addValue(final float x){
 
-            if(hrvHistorySeries != null){
-                for (int i = 0; i < hrvHistorySeries.size(); i++){
-                    canvas.drawCircle((canvas.getWidth() / 2), (canvas.getHeight() / 2), (float)hrvHistorySeries.getY(i), paintWhite);
+        if(hrvView != null) {
+            hrvView.setHeartRate(x);
+            getActivity().runOnUiThread(new Runnable(){
+                @Override
+                public void run(){
+                    hrvView.invalidate();
                 }
-            }
+            });
+            Log.d(TAG, "addValue: " + x);
         }
+        else {
+            Log.d(TAG, "addValue: jrvView is null!");
+            return;
+        }
+        /*
+        The following is needed in order to do operations on hrvView - if we don't do this,
+        we get a crash with 'Only the original thread that created a view hierarchy can touch its views.'
+         */
+
 
     }
 
+    public synchronized void addValue(final float x, final float y) {
 
-    public synchronized void addValue(final float v) {
-
-
-
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-/*                    if (bpmText != null) {
-                        hrvText.setText(String.format("%03d BPM", (int) v));
-                    }
-*/
-                }
-            });
-        }
-
-        if (hrvHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.VERBOSE)) {
-                Log.v(TAG, "hrvHistorySeries == null");
-            }
+/*        if (vectorHistorySeries == null) {
+                Log.v(TAG, "vectorHistorySeries == null");
             return;
         }
         // get rid the oldest sample in history:
-        if (hrvHistorySeries.size() > HISTORY_SIZE) {
-            hrvHistorySeries.removeFirst();
+        if (vectorHistorySeries.size() > history_size) {
+            vectorHistorySeries.removeFirst();
         }
 
         // add the latest history sample:
-        hrvHistorySeries.addLast(null, v);
-//        hrvPlot.redraw();
+        vectorHistorySeries.addLast(x * 1000, y * 1000);
+*/    }
 
-        if(view != null){
-            view.invalidate();
-        }
+
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 }
