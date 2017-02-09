@@ -25,6 +25,9 @@
                     <item
                         android:id="@+id/plotWindowVector"
                         android:title="Vector ECG" />
+                    <item
+                        android:id="@+id/plotWindowHRV"
+                        android:title="HRV" />
                 </menu>
             </item>
 
