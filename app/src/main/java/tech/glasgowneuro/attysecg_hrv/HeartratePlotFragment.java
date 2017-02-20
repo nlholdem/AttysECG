@@ -1,4 +1,4 @@
-package tech.glasgowneuro.attysecg;
+package tech.glasgowneuro.attysecg_hrv;
 
 import android.graphics.Color;
 import android.graphics.Paint;

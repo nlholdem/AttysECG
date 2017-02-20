@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-package tech.glasgowneuro.attysecg;
+package tech.glasgowneuro.attysecg_hrv;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -66,7 +66,11 @@ import java.util.TimerTask;
 import tech.glasgowneuro.attyscomm.AttysComm;
 import uk.me.berndporr.iirj.Butterworth;
 
-public class AttysECG extends AppCompatActivity {
+import static tech.glasgowneuro.attysecg_hrv.AttysECG_HRV.DataRecorder.DATA_SEPARATOR_COMMA;
+import static tech.glasgowneuro.attysecg_hrv.AttysECG_HRV.DataRecorder.DATA_SEPARATOR_SPACE;
+import static tech.glasgowneuro.attysecg_hrv.AttysECG_HRV.DataRecorder.DATA_SEPARATOR_TAB;
+
+public class AttysECG_HRV extends AppCompatActivity {
 
     private Timer timer = null;
     // screen refresh rate
@@ -84,7 +88,7 @@ public class AttysECG extends AppCompatActivity {
 
     UpdatePlotTask updatePlotTask = null;
 
-    private static final String TAG = "AttysECG";
+    private static final String TAG = "AttysECG_HRV";
 
     private Highpass highpass_II = null;
     private Highpass highpass_III = null;
@@ -139,13 +143,17 @@ public class AttysECG extends AppCompatActivity {
 
 
 
-    private class DataRecorder {
+    public class DataRecorder {
         /////////////////////////////////////////////////////////////
         // saving data into a file
 
+        public final static byte DATA_SEPARATOR_TAB = 0;
+        public final static byte DATA_SEPARATOR_COMMA = 1;
+        public final static byte DATA_SEPARATOR_SPACE = 2;
+
         private PrintWriter textdataFileStream = null;
         private File textdataFile = null;
-        private byte data_separator = AttysComm.DATA_SEPARATOR_TAB;
+        private byte data_separator = DATA_SEPARATOR_TAB;
         float samplingInterval = 0;
         float bpm = 0;
 
@@ -202,13 +210,13 @@ public class AttysECG extends AppCompatActivity {
 
             char s = ' ';
             switch (data_separator) {
-                case AttysComm.DATA_SEPARATOR_SPACE:
+                case DATA_SEPARATOR_SPACE:
                     s = ' ';
                     break;
-                case AttysComm.DATA_SEPARATOR_COMMA:
+                case DATA_SEPARATOR_COMMA:
                     s = ',';
                     break;
-                case AttysComm.DATA_SEPARATOR_TAB:
+                case DATA_SEPARATOR_TAB:
                     s = 9;
                     break;
             }
@@ -370,7 +378,7 @@ public class AttysECG extends AppCompatActivity {
         private void annotatePlot() {
             String small = "";
             small = small + "".format("x = 1sec/div, y = %1.04fV/div", ytick);
-            if (attysComm.isRecording()) {
+            if (dataRecorder.isRecording()) {
                 small = small + " !!RECORDING to:" + dataFilename;
             }
             if (infoView != null) {
@@ -823,13 +831,13 @@ public class AttysECG extends AppCompatActivity {
                         dataFilename = dataFilename.replaceAll("[^a-zA-Z0-9.-]", "_");
                         if (!dataFilename.contains(".")) {
                             switch (dataSeparator) {
-                                case AttysComm.DATA_SEPARATOR_COMMA:
+                                case DATA_SEPARATOR_COMMA:
                                     dataFilename = dataFilename + ".csv";
                                     break;
-                                case AttysComm.DATA_SEPARATOR_SPACE:
+                                case DATA_SEPARATOR_SPACE:
                                     dataFilename = dataFilename + ".dat";
                                     break;
-                                case AttysComm.DATA_SEPARATOR_TAB:
+                                case DATA_SEPARATOR_TAB:
                                     dataFilename = dataFilename + ".tsv";
                             }
                         }
@@ -1130,7 +1138,7 @@ public class AttysECG extends AppCompatActivity {
         attysComm.setAdc1_mux_index(mux);
 
         byte data_separator = (byte) (Integer.parseInt(prefs.getString("data_separator", "0")));
-        attysComm.setDataSeparator(data_separator);
+        dataRecorder.setDataSeparator(data_separator);
 
         powerlineHz = Float.parseFloat(prefs.getString("powerline", "50"));
         if (Log.isLoggable(TAG, Log.DEBUG)) {

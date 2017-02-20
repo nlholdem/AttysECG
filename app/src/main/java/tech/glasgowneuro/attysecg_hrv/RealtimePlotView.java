@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-package tech.glasgowneuro.attysecg;
+package tech.glasgowneuro.attysecg_hrv;
 
 import android.content.Context;
 import android.graphics.Canvas;
