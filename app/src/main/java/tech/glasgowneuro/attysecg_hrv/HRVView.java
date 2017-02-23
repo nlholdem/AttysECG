@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -22,13 +23,14 @@ import java.util.ListIterator;
 public class HRVView extends View {
     final String TAG = "HRVView";
 
-    private final int MAXSAMPLES = 100, STROKEWIDTH = 4, INNERCIRCLEWIDTH = 40;
+    private final int MAXSAMPLES = 200, STROKEWIDTH = 2, INNERCIRCLEWIDTH = 40;
     private float heartRate = 50;
     private ArrayList<Float> HRVValues;
 
     private Paint paintClear = null;
     private Paint paintWhite = null;
     private Paint paintCircle = null;
+    private Paint paintTxt = null;
 
     public HRVView(Context context){
         super(context);
@@ -54,15 +56,27 @@ public class HRVView extends View {
         paintClear = new Paint();
         paintClear.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         HRVValues = new ArrayList<>();
+        paintTxt = new Paint();
+        paintTxt.setColor(Color.argb(255, 255, 255, 0));
     }
 
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
 
-        ListIterator li = HRVValues.listIterator();
+        ArrayList<Float> TempHRVValues = new ArrayList<Float>(HRVValues);
+
+        ListIterator li = TempHRVValues.listIterator();
 
         canvas.drawPaint(paintClear);
+
+        int txtDiv = 25;
+        Rect bounds = new Rect();
+        String HRVTxt = "";
+        HRVTxt = HRVTxt + "".format("%d", (int)heartRate);
+        int centreX = getWidth() / 2;
+        int centreY = getHeight() / 2;
+        paintTxt.setTextSize(INNERCIRCLEWIDTH );
 
         int i = HRVValues.size();
         while (li.hasNext()){
@@ -70,7 +84,8 @@ public class HRVView extends View {
             paintCircle.setColor(heartRateToColour(heartRate));
 
 //            Log.d(TAG, "RadiusList = " + li.previous());
-            canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, INNERCIRCLEWIDTH + i * STROKEWIDTH, paintCircle);
+            canvas.drawCircle(centreX, centreY, INNERCIRCLEWIDTH + i * STROKEWIDTH, paintCircle);
+            canvas.drawText(HRVTxt, centreX - INNERCIRCLEWIDTH / 2, centreY + INNERCIRCLEWIDTH / 2, paintTxt);
             i--;
 
         }
@@ -86,11 +101,11 @@ public class HRVView extends View {
         HR = 256 * (HR - minHR) / (maxHR - minHR);
         // lookup colour in colourmap
 
-        return Color.argb(255, (int) HR, 0, 0);
+        return Color.argb(255, (int) HR / 2, 0, (int) HR);
 
     }
 
-    public void setHeartRate(float rad){
+    public synchronized void setHeartRate(float rad){
 //        heartRate = (int) rad;
         HRVValues.add(rad);
 
@@ -100,9 +115,5 @@ public class HRVView extends View {
         Log.d(TAG, "HRVValues length: " + HRVValues.size());
     }
 
-
-    public float getHeartRate(){
-        return heartRate;
-    }
 
 }

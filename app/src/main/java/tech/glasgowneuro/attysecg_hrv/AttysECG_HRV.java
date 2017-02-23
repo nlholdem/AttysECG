@@ -418,9 +418,6 @@ public class AttysECG_HRV extends AppCompatActivity {
                             if (heartratePlotFragment != null) {
                                 heartratePlotFragment.addValue(filtBPM);
                             }
-                            if (hrvPlotFragment != null) {
-                                hrvPlotFragment.addValue(filtBPM);
-                            }
                         }
                     }
                     t2 = timestamp;
@@ -580,6 +577,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                     }
                     if (vectorPlotFragment != null) {
                         vectorPlotFragment.redraw();
+                    }
+                    if (hrvPlotFragment != null) {
+                        hrvPlotFragment.addValue(filtBPM);
                     }
                     if (hrvPlotFragment != null) {
                         hrvPlotFragment.redraw();
