@@ -1073,18 +1073,22 @@ public class AttysECG_HRV extends AppCompatActivity {
                 return true;
 
             case R.id.plotWindowHRV:
-
+                hidePlotFragment();
                 deletePlotWindow();
 
                 hrvPlotFragment = new HRVPlotFragment();
 
                 hrvPlotFragment.setHistorySize(attysComm.getSamplingRateInHz()/2);
                 hrvPlotFragment.setGain(gain);
-                getSupportFragmentManager().beginTransaction()
+/*                getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_plot_container, hrvPlotFragment, "HRVPlotFragment")
                         .commit();
+*/
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.mainplotlayout, hrvPlotFragment, "HRVPlotFragment")
+                        .commit();
 
-                showPlotFragment();
+//                showPlotFragment();
                 plotWindowContent = PlotWindowContent.HRV;
                 return true;
 
