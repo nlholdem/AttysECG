@@ -25,7 +25,6 @@ public class HRVPlotFragment extends Fragment {
     private float range = 1;
 
     private SimpleXYSeries vectorHistorySeries = null;
-    private XYPlot vectorPlot = null;
     private HRVView hrvView = null;
 
 
@@ -35,17 +34,7 @@ public class HRVPlotFragment extends Fragment {
         history_size = historySize;
     }
 
-    void setGain(float _gain) {
-        range = 750 / _gain;
-        setScale();
-    }
 
-    void setScale() {
-        if (vectorPlot != null) {
-            vectorPlot.setRangeBoundaries(range, -range, BoundaryMode.FIXED);
-            vectorPlot.setDomainBoundaries(-range, range, BoundaryMode.FIXED);
-        }
-    }
 
     /**
      * Called when the activity is first created.
@@ -73,13 +62,13 @@ public class HRVPlotFragment extends Fragment {
     }
 
 
-    public synchronized void redraw() {
+/*    public synchronized void redraw() {
 
         if (vectorPlot != null) {
             vectorPlot.redraw();
         }
     }
-
+*/
     public synchronized void addValue(final float x){
 
         if(hrvView != null) {

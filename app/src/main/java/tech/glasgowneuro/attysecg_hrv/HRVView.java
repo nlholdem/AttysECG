@@ -24,7 +24,7 @@ public class HRVView extends View {
     final String TAG = "HRVView";
 
     private final int MAXSAMPLES = 200, STROKEWIDTH = 2, INNERCIRCLEWIDTH = 40;
-    private float heartRate = 50;
+    private float heartRate = 50, maxHR = 70, minHR=50;
     private float txtSizeMult = (float) 1.4;
     private ArrayList<Float> HRVValues;
 
@@ -102,10 +102,9 @@ public class HRVView extends View {
 
     private int heartRateToColour(float HR){
 
-        float maxHR  = 100, minHR = 35;
         // normalise HR
 
-        HR = 256 * (HR - minHR) / (maxHR - minHR);
+        HR = 255 * (HR - minHR) / (maxHR - minHR);
         // lookup colour in colourmap
 
         return Color.argb(200, (int) (HR /1.8), (int) (HR / 1.5), (int) HR);
@@ -119,7 +118,11 @@ public class HRVView extends View {
         if(HRVValues.size() > MAXSAMPLES){
             HRVValues.remove(0);
         }
-        Log.d(TAG, "HRVValues length: " + HRVValues.size());
+
+        maxHR = Math.max(rad, maxHR);
+        minHR = Math.min(rad, minHR);
+
+        Log.d(TAG, "minHR: " + minHR + " maxHR: " + maxHR);
     }
 
 

@@ -523,9 +523,6 @@ public class AttysECG_HRV extends AppCompatActivity {
                     if (hrvPlotFragment != null) {
                         hrvPlotFragment.addValue(filtBPM);
                     }
-                    if (hrvPlotFragment != null) {
-                        hrvPlotFragment.redraw();
-                    }
                 }
             }
         }
@@ -1056,7 +1053,6 @@ public class AttysECG_HRV extends AppCompatActivity {
                 hrvPlotFragment = new HRVPlotFragment();
 
                 hrvPlotFragment.setHistorySize(attysComm.getSamplingRateInHz()/2);
-                hrvPlotFragment.setGain(gain);
 /*                getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_plot_container, hrvPlotFragment, "HRVPlotFragment")
                         .commit();

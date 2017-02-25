@@ -100,7 +100,7 @@ public class ECG_rr_det {
     // constructor
     // provide the sampling rate and the powerline frequency
     public ECG_rr_det(float _samplingrateInHz, float _powerlineHz) {
-        init(_samplingrateInHz, _powerlineHz, 3);
+        init(_samplingrateInHz, _powerlineHz, 5);
     }
 
     private void init(float _samplingrateInHz, float _powerlineHz, int _medianFilterSize) {
@@ -140,9 +140,9 @@ public class ECG_rr_det {
         timestamp = 0;
         doNotDetect = (int) samplingRateInHz;
         ignoreECGdetector = (int) samplingRateInHz;
-        hrBuffer[0] = 0;
-        hrBuffer[1] = 0;
-        hrBuffer[2] = 0;
+        for (int i=0; i < medianFilterSize; i++){
+            hrBuffer[i] = 0;
+        }
     }
 
     float getFiltBPM() {
@@ -198,7 +198,7 @@ public class ECG_rr_det {
                         unfiltBPM = bpm;
                         System.arraycopy(hrBuffer, 0, sortBuffer, 0, hrBuffer.length);
                         Arrays.sort(sortBuffer);
-                        filtBPM = sortBuffer[1];
+                        filtBPM = sortBuffer[medianFilterSize / 2];
                         if (filtBPM > 0) {
                             // Log.d(TAG,"h="+h+",amplitude="+amplitude+" bpm="+filtBPM);
                             rrListener.haveRpeak(timestamp, filtBPM, unfiltBPM, amplitude, h / threshold);
