@@ -69,10 +69,10 @@ public class HRVPlotFragment extends Fragment {
         }
     }
 */
-    public synchronized void addValue(final float x){
+    public synchronized void addValue(final float x, float samplingRate){
 
         if(hrvView != null) {
-            hrvView.setHeartRate(x);
+            hrvView.setHeartRate(x, samplingRate);
 
             /*
             The following is needed in order to do operations on hrvView - if we don't do this,
@@ -84,10 +84,10 @@ public class HRVPlotFragment extends Fragment {
                     hrvView.invalidate();
                 }
             });
-            Log.d(TAG, "addValue: " + x);
+//            Log.d(TAG, "addValue: " + x);
         }
         else {
-            Log.d(TAG, "addValue: jrvView is null!");
+            Log.d(TAG, "addValue: hrvView is null!");
             return;
         }
 

@@ -521,7 +521,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                         vectorPlotFragment.redraw();
                     }
                     if (hrvPlotFragment != null) {
-                        hrvPlotFragment.addValue(filtBPM);
+                        if(attysComm != null){
+                            hrvPlotFragment.addValue(filtBPM, attysComm.getSamplingRateInHz());
+                        }
                     }
                 }
             }

@@ -100,7 +100,7 @@ public class ECG_rr_det {
     // constructor
     // provide the sampling rate and the powerline frequency
     public ECG_rr_det(float _samplingrateInHz, float _powerlineHz) {
-        init(_samplingrateInHz, _powerlineHz, 5);
+        init(_samplingrateInHz, _powerlineHz, 3);
     }
 
     private void init(float _samplingrateInHz, float _powerlineHz, int _medianFilterSize) {
