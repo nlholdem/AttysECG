@@ -112,6 +112,7 @@ public class AttysECG_HRV extends AppCompatActivity {
     private float ytick = 0;
 
     private int[] actualChannelIdx;
+    private int notch;
 
     public enum PlotWindowContent {
         NONE,
@@ -454,9 +455,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                             if (infoView != null) {
                                 if (ygapForInfo == 0) {
                                     ygapForInfo = infoView.getInfoHeight();
-                                    if ((Log.isLoggable(TAG, Log.DEBUG)) && (ygapForInfo > 0)) {
+/*                                    if ((Log.isLoggable(TAG, Log.DEBUG)) && (ygapForInfo > 0)) {
                                         Log.d(TAG, "ygap=" + ygapForInfo);
-                                    }
+                                    }*/
                                 }
                             }
 
@@ -489,9 +490,9 @@ public class AttysECG_HRV extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*        if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Back button pressed");
-        }
+        }*/
         killAttysComm();
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
@@ -550,9 +551,35 @@ public class AttysECG_HRV extends AppCompatActivity {
         super.onStart();
 
         startDAQ();
+        setDefaultUIState();
 
     }
 
+    private void setDefaultUIState(){
+
+
+        hidePlotFragment();
+        deletePlotWindow();
+
+        hrvPlotFragment = new HRVPlotFragment();
+
+        hrvPlotFragment.setHistorySize(attysComm.getSamplingRateInHz()/2);
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.mainplotlayout, hrvPlotFragment, "HRVPlotFragment")
+                .commit();
+
+        plotWindowContent = PlotWindowContent.HRV;
+
+            if (iirNotch_II == null) {
+                iirNotch_II = new Butterworth();
+                iirNotch_III = new Butterworth();
+                iirNotch_II.bandStop(notchOrder,
+                        attysComm.getSamplingRateInHz(), powerlineHz, notchBW);
+                iirNotch_III.bandStop(notchOrder,
+                        attysComm.getSamplingRateInHz(), powerlineHz, notchBW);
+            }
+    }
 
     @Override
     public void onResume() {
@@ -622,9 +649,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                             // theChannelWeDoAnalysis = actualChannelIdx[chNo];
                             updatePlotTask.resetAnalysis();
                         } catch (Exception e) {
-                            if (Log.isLoggable(TAG, Log.ERROR)) {
+/*                            if (Log.isLoggable(TAG, Log.ERROR)) {
                                 Log.e(TAG, "Exception in the TouchEventListener (BUG!):", e);
-                            }
+                            }*/
                         }
                     }
                 });
@@ -673,45 +700,45 @@ public class AttysECG_HRV extends AppCompatActivity {
             timer.cancel();
             timer.purge();
             timer = null;
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*            if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Killed timer");
-            }
+            }*/
         }
 
         if (updatePlotTask != null) {
             updatePlotTask.cancel();
             updatePlotTask = null;
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*            if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Killed update Plot Task");
-            }
+            }*/
         }
 
         if (attysComm != null) {
             attysComm.stop();
             attysComm = null;
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*            if (Log.isLoggable(TAG, Log.DEBUG)) {
                 Log.d(TAG, "Killed AttysComm");
-            }
+            }*/
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Destroy!");
-        }
+        }*/
         killAttysComm();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Restarting");
-        }
+       }*/
         killAttysComm();
     }
 
@@ -719,10 +746,10 @@ public class AttysECG_HRV extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Paused");
-        }
+        }*/
 
     }
 
@@ -730,10 +757,10 @@ public class AttysECG_HRV extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Stopped");
-        }
+        }*/
 
         killAttysComm();
 
@@ -854,9 +881,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                                 String filename = list[i];
                                 File fp = new File(attysdir, filename);
                                 files.add(Uri.fromFile(fp));
-                                if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*                                if (Log.isLoggable(TAG, Log.DEBUG)) {
                                     Log.d(TAG, "filename=" + filename);
-                                }
+                                }*/
                             }
                         }
                         sendIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
@@ -913,15 +940,15 @@ public class AttysECG_HRV extends AppCompatActivity {
                         }
                         java.io.FileNotFoundException e = dataRecorder.startRec(file);
                         if (e != null) {
-                            if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*                            if (Log.isLoggable(TAG, Log.DEBUG)) {
                                 Log.d(TAG, "Could not open data file: " + e.getMessage());
-                            }
+                            }*/
                             return true;
                         }
                         if (dataRecorder.isRecording()) {
-                            if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*                            if (Log.isLoggable(TAG, Log.DEBUG)) {
                                 Log.d(TAG, "Saving to " + file.getAbsolutePath());
-                            }
+                            }*/
                         }
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -986,9 +1013,9 @@ public class AttysECG_HRV extends AppCompatActivity {
                 // Create a new Fragment to be placed in the activity layout
                 heartratePlotFragment = new HeartratePlotFragment();
                 // Add the fragment to the 'fragment_container' FrameLayout
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*                if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "Adding heartrate fragment");
-                }
+                }*/
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.fragment_plot_container, heartratePlotFragment, "heartratePlotFragment")
                         .commit();
@@ -1089,10 +1116,10 @@ public class AttysECG_HRV extends AppCompatActivity {
 
     private void getsetAttysPrefs() {
         byte mux;
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "Setting preferences");
-        }
+        }*/
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
 
@@ -1109,9 +1136,9 @@ public class AttysECG_HRV extends AppCompatActivity {
         dataRecorder.setDataSeparator(data_separator);
 
         powerlineHz = Float.parseFloat(prefs.getString("powerline", "50"));
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*        if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "powerline=" + powerlineHz);
-        }
+        }*/
 
         samplingRate = (byte) Integer.parseInt(prefs.getString("samplingrate", "0"));
         if (samplingRate > 1) samplingRate = 1;

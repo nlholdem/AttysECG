@@ -45,7 +45,7 @@ public class HeartratePlotFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreate, creating Fragment");
+//        Log.d(TAG, "onCreate, creating Fragment");
 
         if (container == null) {
             return null;
@@ -59,9 +59,9 @@ public class HeartratePlotFragment extends Fragment {
 
         bpmHistorySeries = new SimpleXYSeries("Heart rate / beats per minute");
         if (bpmHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.ERROR)) {
+/*            if (Log.isLoggable(TAG, Log.ERROR)) {
                 Log.e(TAG, "bpmHistorySeries == null");
-            }
+            }*/
         }
         bpmHistorySeries.useImplicitXVals();
 
@@ -108,9 +108,9 @@ public class HeartratePlotFragment extends Fragment {
         }
 
         if (bpmHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+/*            if (Log.isLoggable(TAG, Log.VERBOSE)) {
                 Log.v(TAG, "bpmHistorySeries == null");
-            }
+            }*/
             return;
         }
         // get rid the oldest sample in history:

@@ -46,18 +46,15 @@ public class HRVView extends View {
 
     public HRVView(Context context){
         super(context);
-        Log.d(TAG, "Constructor #1");
         init();
     }
 
     public HRVView(Context context, AttributeSet attrs){
         super(context, attrs);
-        Log.d(TAG, "Constructor #2");
         init();
     }
     public HRVView(Context context, AttributeSet attrs, int defStyle){
         super(context, attrs, defStyle);
-        Log.d(TAG, "Constructor #3");
         init();
     }
 
@@ -76,7 +73,7 @@ public class HRVView extends View {
 
         maxCircleRadius  = Math.min(getHeight(), getWidth()) / 2F;
         maxCircleRadius  = 1000F;
-        Log.d(TAG, "maxCircleRadius: " + maxCircleRadius + " Height: " + getHeight() + " Width: " + getWidth());
+//        Log.d(TAG, "maxCircleRadius: " + maxCircleRadius + " Height: " + getHeight() + " Width: " + getWidth());
 
         ringsColours = new int[MAXSAMPLES];
         ringsStops = new float[MAXSAMPLES];
@@ -88,7 +85,7 @@ public class HRVView extends View {
             alphas[i] = (int)(220F-(220F*ringsStops[i]*ringsStops[i]));
 //            alphas[i] = (int)(220F-(220F*Math.pow( (i / (((float)MAXSAMPLES - 1F))), 0.25)));
             HRVValues.add(heartRate);
-            Log.d(TAG, "Colour: " +  255 * i/MAXSAMPLES + " Stops: " + ringsStops[i] + " alpha: " + alphas[i]);
+//            Log.d(TAG, "Colour: " +  255 * i/MAXSAMPLES + " Stops: " + ringsStops[i] + " alpha: " + alphas[i]);
 
         }
 //        ringsShader = new RadialGradient(1280, 1280, maxCircleRadius, ringsColours, ringsStops, Shader.TileMode.CLAMP);
@@ -137,7 +134,7 @@ public class HRVView extends View {
         canvas.drawText(HRVTxt, centreX - INNERCIRCLEWIDTH / 2, centreY + INNERCIRCLEWIDTH / 2, paintTxt);
 //        Log.d(TAG, "Width: " + centreX + " Height: " + centreY);
 
-        //Log.d(TAG, "HeartRate:  " + heartRate + " Color: " + paintCircle.getColor() + " i: " + i);
+//        Log.d(TAG, "HeartRate:  " + heartRate + " Color: " + paintCircle.getColor() + " i: " + i);
     }
 
 
@@ -151,7 +148,7 @@ public class HRVView extends View {
         // lookup colour in colourmap
         //int alpha = (int)(200F * (float)(index + 1F - MAXSAMPLES) / (float)MAXSAMPLES);
 
-        return Color.argb(alphas[index], (int) (HR /1.8), (int) (HR / 1.5), (int) (HR / 1.1));
+        return Color.argb(alphas[index], (int) (HR /1.8), (int) (HR / 1.5), (int) (HR / 1.01));
 
     }
 

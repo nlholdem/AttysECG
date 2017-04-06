@@ -101,9 +101,9 @@ public class InfoView extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawPaint(paint);
                 canvas.drawText(smallText, getWidth() / 100, y2, paintSmall);
             } else {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
+/*                if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "Canvas==null");
-                }
+                }*/
             }
             holder.unlockCanvasAndPost(canvas);
             canvas = null;

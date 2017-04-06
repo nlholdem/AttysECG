@@ -44,7 +44,7 @@ public class HRVPlotFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreate, creating Fragment");
+//        Log.d(TAG, "onCreate, creating Fragment");
 
         if (container == null) {
             return null;
@@ -53,9 +53,9 @@ public class HRVPlotFragment extends Fragment {
 
         view = inflater.inflate(R.layout.hrvplotfragment, container, false);
         if (view == null) {
-                Log.e(TAG, "view == NULL!");
+//                Log.e(TAG, "view == NULL!");
         }
-        Log.d(TAG, "Created view");
+//        Log.d(TAG, "Created view");
 
         hrvView = (HRVView) view.findViewById(R.id.HRVPlotView);
         return view;
@@ -87,7 +87,7 @@ public class HRVPlotFragment extends Fragment {
 //            Log.d(TAG, "addValue: " + x);
         }
         else {
-            Log.d(TAG, "addValue: hrvView is null!");
+//            Log.d(TAG, "addValue: hrvView is null!");
             return;
         }
 

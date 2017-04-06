@@ -55,10 +55,10 @@ public class VectorPlotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-
+/*
         if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "onCreate, creating Fragment");
-        }
+        }*/
 
         if (container == null) {
             return null;
@@ -68,24 +68,24 @@ public class VectorPlotFragment extends Fragment {
 
         view = inflater.inflate(R.layout.vectorplotfragment, container, false);
         if (view == null) {
-            if (Log.isLoggable(TAG, Log.ERROR)) {
+/*            if (Log.isLoggable(TAG, Log.ERROR)) {
                 Log.e(TAG, "view == NULL!");
-            }
+            }*/
         }
 
         // setup the APR Levels plot:
         vectorPlot = (XYPlot) view.findViewById(R.id.vectorPlotView);
         if (vectorPlot == null) {
-            if (Log.isLoggable(TAG, Log.ERROR)) {
+/*            if (Log.isLoggable(TAG, Log.ERROR)) {
                 Log.e(TAG, "vectorPlot == null");
-            }
+            }*/
         }
 
         vectorHistorySeries = new SimpleXYSeries("");
         if (vectorHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.ERROR)) {
+/*            if (Log.isLoggable(TAG, Log.ERROR)) {
                 Log.e(TAG, "vectorHistorySeries == null");
-            }
+            }*/
         }
 
         setScale();
@@ -116,9 +116,9 @@ public class VectorPlotFragment extends Fragment {
     public synchronized void addValue(final float x, final float y) {
 
         if (vectorHistorySeries == null) {
-            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+/*            if (Log.isLoggable(TAG, Log.VERBOSE)) {
                 Log.v(TAG, "vectorHistorySeries == null");
-            }
+            }*/
             return;
         }
         // get rid the oldest sample in history:
